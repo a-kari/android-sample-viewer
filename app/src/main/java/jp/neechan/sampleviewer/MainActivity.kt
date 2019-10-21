@@ -1,7 +1,9 @@
 package jp.neechan.sampleviewer
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import jp.neechan.sampleviewer.utils.PermissionUtils
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openDocument(path: String) {
-        val mimeType    = if (path.endsWith("doc")) "application/msword" else "application/pdf"
+        val mimeType    = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(path))
         val document    = File(path)
         val documentUri = FileProvider.getUriForFile(this, "$packageName.fileprovider", document)
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 1) {
+        if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             enableButtons()
         }
     }
